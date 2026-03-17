@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{{ stock.name }}</title>
+    <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+    <link rel="stylesheet" href="/static/base.css">
+<style>
+
+.container {
+    width: 90%;
+    max-width: 1200px;
+    margin: auto;
+    padding: 40px 0;
+}
+
+.top-right {
+    position: absolute;
+    top: 20px;
+    right: 40px;
+}
+
+.top-right a {
+    text-decoration: none;
+    padding: 8px 16px;
+    border-radius: 6px;
+    background: #ff5e62;
+    color: white;
+    font-weight: 600;
+    transition: 0.3s;
+}
+
+.top-right a:hover {
+    background: #ff416c;   
+    transform: translateY(-2px);
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<div class="top-right">
+    <a href="{% url 'index' %}">Landing Page</a>
+</div>
+
+<!-- ================= KEY METRICS ================= -->
+<h2 class="section-heading">Key Metrics</h2>
+
+<div class="metrics-grid">
+    {% for key, value in summary.items %}
+    <div class="metric-card">
+        <div class="metric-title">{{ key }}</div>
+        <div class="metric-value">{{ value }}</div>
+    </div>
+    {% endfor %}
+</div>
+
+<!-- ================= CHART ================= -->
+<div class="chart-box">
+
+<h2 style="text-align:center; color:black;">Price Chart</h2>
+
+<div class="period-buttons">
+    {% for value,label in context_periods %}
+        <a href="?period={{ value }}"
+           class="{% if period == value %}active{% endif %}">
+           {{ label }}
+        </a>
+    {% endfor %}
+</div>
+
+<div id="chart" style="height:500px;"></div>
+
+</div>
+
+<!-- ================= TABLES ================= -->
+
+<div class="table-section">
+    <h2>Peer Comparison</h2>
+    {% include 'table_template.html' with headers=peer_headers rows=peers %}
+</div>
+
+<div class="table-section">
+    <h2>Profit & Loss</h2>
+    {% include 'table_template.html' with headers=pnl_headers rows=pnl %}
+</div>
+
+<div class="table-section">
+    <h2>Balance Sheet</h2>
+    {% include 'table_template.html' with headers=bs_headers rows=bs %}
+</div>
+
+<div class="table-section">
+    <h2>Cash Flow</h2>
+    {% include 'table_template.html' with headers=cf_headers rows=cf %}
+</div>
+
+<div class="table-section">
+    <h2>Ratios</h2>
+    {% include 'table_template.html' with headers=ratio_headers rows=ratios %}
+</div>
+
+<div class="table-section">
+    <h2>Shareholding Pattern</h2>
+    {% include 'table_template.html' with headers=share_headers rows=shareholding %}
+</div>
+
+</div>
+
+<script id="candle-data" type="application/json">{{ candles|safe }}</script>
+
+<script>
+
+var candles = JSON.parse(document.getElementById('candle-data').textContent);
+
+var options = {
+    series: [{
+        data: candles
+    }],
+
+    chart: {
+    type: 'candlestick',
+    height: 520,
+    background: '#ffffff',
+    toolbar: {
+        show: true,
+        tools: {
+            download: true,
+            selection: true,
+            zoom: true,
+            zoomin: true,
+            zoomout: true,
+            pan: true,
+            reset: true
+        }
+    }
+},
+
+    title: {
+        text: '',
+        align: 'center'
+    },
+
+    xaxis: {
+        type: 'datetime',
+        labels: {
+            rotate: -45,
+            style: {
+                colors: "#333",
+                fontSize: "12px"
+            }
+        }
+    },
+
+    yaxis: {
+        tooltip: {
+            enabled: true
+        },
+        labels: {
+            formatter: function(val) {
+                return val.toFixed(2);
+            },
+            style: {
+                colors: "#333",
+                fontSize: "12px"
+            }
+        }
+    },
+
+    tooltip: {
+        enabled: true,
+        shared: true,
+        theme: "dark",
+        x: {
+            format: "dd MMM yyyy"
+        },
+        y: {
+            formatter: function(val) {
+                return val.toFixed(2);
+            }
+        }
+    },
+
+    plotOptions: {
+        candlestick: {
+            colors: {
+                upward: '#00B746',
+                downward: '#EF403C'
+            }
+        }
+    }
+
+};
+
+var chart = new ApexCharts(document.querySelector("#chart"), options);
+chart.render();
+
+</script>
+
+{% include 'footer.html'%}
+</body>
+</html>

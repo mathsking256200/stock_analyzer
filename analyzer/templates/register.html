@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Registration Page</title>
+    <link rel="stylesheet" href="/static/style.css">
+    <style>
+        
+        label {
+            font-weight: 600;
+            display: block;
+            margin-top: 10px;
+        }
+
+        input, textarea {
+            width: 100%;
+            padding: 8px;
+            margin-top: 5px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            transition: 0.3s;
+        }
+
+        input:focus, textarea:focus {
+            border-color: #4e73df;
+            box-shadow: 0 0 5px rgba(78,115,223,0.5);
+            outline: none;
+        }
+
+        .gender-group {
+            margin-top: 8px;
+        }
+
+        .gender-group input {
+            width: auto;
+            margin-right: 5px;
+        }
+
+        .success {
+            border: 1px solid green;
+        }
+
+        .error-border {
+            border: 1px solid red;
+        }
+
+        .btn-group {
+            margin-top: 15px;
+            text-align: center;
+        }
+
+        .submit-btn {
+            background-color: #4e73df;
+            color: white;
+        }
+
+        .reset-btn {
+            background-color: #858796;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>Registration Form</h2>
+
+    <form method="POST" action="{% url 'register' %}">
+    {% csrf_token %}
+
+        <label>First Name</label>
+        <input type="text" name="first_name" id="firstName">
+        <div class="error" id="firstNameError"></div>
+
+        <label>Last Name</label>
+        <input type="text" name="last_name" id="lastName">
+        <div class="error" id="lastNameError"></div>
+
+        <label>Password</label>
+        <input type="password" name="password" id="password">
+        <div class="error" id="passwordError"></div>
+
+        <label>Date of Birth</label>
+        <input type="date" name="dob" id="dob">
+        <div class="error" id="dobError"></div>
+
+        <label>Address</label>
+        <textarea id="address" name="address" rows="3"
+            placeholder="Include Home/Flat number, Street/Town name, Subdistrict, District, State and Pin Code"></textarea>
+
+        <label>Gender</label>
+        <div class="gender-group">
+            <input type="radio" name="gender" value="Male"> Male</input>
+            <input type="radio" name="gender" value="Female">Female</input>
+            <input type="radio" name="gender" value="Other">Other</input>
+        </div>
+
+        <label>Email</label>
+        <input type="text" name="email" id="email">
+        <div class="error" id="emailError"></div>
+
+        <label>Phone Number</label>
+        <input type="text" name="phone" id="phone">
+        <div class="error" id="phoneError"></div>
+
+        <div class="btn-group">
+            <button type="submit" class="submit-btn">Submit</button>
+            <br><br>
+            <button type="reset" class="reset-btn">Reset</button>
+        </div>
+
+        <br><br>
+<p style="text-align:center;">
+    Already have an account?
+    <div class="link-text">
+        <a href="{% url 'login' %}" class="login-link">Login</a>
+    </div>
+</p>
+    </form>
+</div>
+
+<script>
+const firstName = document.getElementById("firstName");
+const lastName = document.getElementById("lastName");
+const password = document.getElementById("password");
+const dob = document.getElementById("dob");
+const email = document.getElementById("email");
+const phone = document.getElementById("phone");
+
+function showError(input, message, errorId) {
+    document.getElementById(errorId).innerText = message;
+    input.classList.add("error-border");
+    input.classList.remove("success");
+}
+
+function showSuccess(input, errorId) {
+    document.getElementById(errorId).innerText = "";
+    input.classList.remove("error-border");
+    input.classList.add("success");
+}
+
+// First Name validation
+firstName.addEventListener("input", () => {
+    if (firstName.value.length < 3) {
+        showError(firstName, "Minimum 3 characters required", "firstNameError");
+    } else {
+        showSuccess(firstName, "firstNameError");
+    }
+});
+
+// Last Name validation
+lastName.addEventListener("input", () => {
+    if (lastName.value.length < 3) {
+        showError(lastName, "Minimum 3 characters required", "lastNameError");
+    } else {
+        showSuccess(lastName, "lastNameError");
+    }
+});
+
+// Password validation
+password.addEventListener("input", () => {
+    const pattern = /^(?=.*[0-9]).{6,}$/;
+    if (!password.value.match(pattern)) {
+        showError(password, "Min 6 characters & at least 1 number", "passwordError");
+    } else {
+        showSuccess(password, "passwordError");
+    }
+});
+
+// Email validation
+email.addEventListener("input", () => {
+    const pattern = /^[^ ]+@[^ ]+\.[a-z]{2,3}$/;
+    if (!email.value.match(pattern)) {
+        showError(email, "Invalid email format", "emailError");
+    } else {
+        showSuccess(email, "emailError");
+    }
+});
+
+// Phone validation
+phone.addEventListener("input", () => {
+    const pattern = /^[0-9]{10}$/;
+    if (!phone.value.match(pattern)) {
+        showError(phone, "Must be exactly 10 digits", "phoneError");
+    } else {
+        showSuccess(phone, "phoneError");
+    }
+});
+
+// DOB validation (18+)
+dob.addEventListener("change", () => {
+    const today = new Date();
+    const birthDate = new Date(dob.value);
+    let age = today.getFullYear() - birthDate.getFullYear();
+    if (age < 18) {
+        showError(dob, "Must be 18 years old", "dobError");
+    } else {
+        showSuccess(dob, "dobError");
+    }
+});
+
+// Prevent submission if errors exist
+document.querySelector("form").addEventListener("submit", function(e) {
+
+    if (document.querySelectorAll(".error-border").length > 0) {
+        e.preventDefault();
+        alert("Please fix errors before submitting.");
+    } else {
+        // Redirect to login page
+        window.location.href = "/login/";
+    }
+
+});
+</script>
+</body>
+</html>

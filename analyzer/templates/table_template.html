@@ -1,0 +1,26 @@
+<div class="table-section">
+    <h2>{{ title }}</h2>
+
+    {% if headers and rows %}
+    <table>
+        <thead>
+            <tr>
+                {% for header in headers %}
+                    <th>{{ header }}</th>
+                {% endfor %}
+            </tr>
+        </thead>
+        <tbody>
+            {% for row in rows %}
+                <tr>
+                    {% for col in row %}
+                        <td>{{ col }}</td>
+                    {% endfor %}
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+        <p>No data available.</p>
+    {% endif %}
+</div>

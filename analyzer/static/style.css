@@ -1,0 +1,83 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+body {
+    font-family: 'Inter', Arial, sans-serif;
+    background: linear-gradient(to right,#a2aadb,#898ac4);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+}
+
+.container {
+    background: white;
+    padding: 25px 30px;
+    border-radius: 12px;
+    width: 360px;
+    box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.15);
+}
+
+h2 {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+input[type="email"],
+input[type="password"],
+input[type="text"] {
+    width: 100%;
+    padding: 10px;
+    margin: 8px 0;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+}
+
+button {
+    width: 100%;
+    padding: 10px;
+    background-color: #5a1fd1;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+button:hover {
+    background-color: #5a1fd1;
+}
+
+.error {
+    color: red;
+    text-align: center;
+}
+
+.link-text {
+    text-align: center;
+    margin-top: 15px;
+}
+
+.link-text a {
+    text-decoration: none;
+    color: #5a1fd1;
+    font-weight: bold;
+}
+
+.remember-container {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 10px 0 15px 0;
+    font-size: 14px;
+}
+
+.remember-container input[type="checkbox"] {
+    width: 16px;
+    height: 16px;
+    cursor: pointer;
+}
+
+.remember-container label {
+    margin: 0;
+    cursor: pointer;
+}

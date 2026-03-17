@@ -1,0 +1,266 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Stock Dashboard</title>
+    <link rel="stylesheet" href="/static/dashboard.css">
+</head>
+
+<body>
+
+    <div class="dashboard-container">
+        <div class="card">
+
+            <a href="{% url 'logout' %}" class="logout-btn">Logout</a>
+
+            <div class="header">
+
+                <h2>Stock Watchlist Dashboard</h2>
+
+            </div>
+
+            <div class="action-bar">
+
+                <a href="{% url 'export_excel' %}" class="export-btn">
+                    Export to Excel
+                </a>
+
+                <div class="center-search">
+                    <div class="search-box">
+
+                        <input type="text" id="stockSearch" placeholder="🔍 Search Stock..."
+                            onkeyup="searchStock(); showSuggestions();">
+
+                        <div id="suggestions"></div>
+
+                    </div>
+                </div>
+
+                <a href="{% static 'documents/Stock_Analysis.docx' %}" class="download-btn" download>
+                    📄 Download Checklist
+                </a>
+
+            </div>
+            <br>
+
+            {% if watchlist_rows %}
+
+            <table id="stockTable">
+
+                <thead>
+
+                    <tr>
+
+                        <th>S.No.</th>
+                        <th></th>
+                        <th>Name</th>
+                        <th>CMP</th>
+                        <th>P/E</th>
+                        <th>CMP/BV</th>
+                        <th>PEG</th>
+                        <th>M.cap/Sales</th>
+                        <th>Sales Growth</th>
+                        <th>Profit Growth</th>
+                        <th>ROE</th>
+                        <th>ROCE</th>
+                        <th>Asset Turnover</th>
+                        <th>OPM</th>
+                        <th>NPM</th>
+                        <th>Debt/Equ</th>
+                        <th>Int Coverage</th>
+                        <th>Inventory Turnover</th>
+                        <th>Current Ratio</th>
+
+                        <th>Score</th>
+                        <th>Analysis</th>
+                        <th>Suggestion</th>
+                        <th>Rating</th>
+
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                    {% for row in watchlist_rows %}
+
+                    <tr>
+
+                        {% for cell in row %}
+
+                        <td>{{ cell }}</td>
+
+                        {% endfor %}
+
+                    </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+            {% endif %}
+
+        </div>
+    </div>
+
+    <script>
+
+        let allStocks = {{ stocks| safe }};
+
+        function applyFundamentalColors() {
+
+            let table = document.getElementById("stockTable");
+            let rows = table.getElementsByTagName("tr");
+
+            for (let i = 1; i < rows.length; i++) {
+
+                let cells = rows[i].getElementsByTagName("td");
+
+                let pe = parseFloat(cells[4].innerText);
+                let cmpbv = parseFloat(cells[5].innerText);
+                let peg = parseFloat(cells[6].innerText);
+                let mcapsales = parseFloat(cells[7].innerText);
+                let sales = parseFloat(cells[8].innerText);
+                let profit = parseFloat(cells[9].innerText);
+                let roe = parseFloat(cells[10].innerText);
+                let roce = parseFloat(cells[11].innerText);
+                let asset = parseFloat(cells[12].innerText);
+                let opm = parseFloat(cells[13].innerText);
+                let npm = parseFloat(cells[14].innerText);
+                let debt = parseFloat(cells[15].innerText);
+                let interest = parseFloat(cells[16].innerText);
+                let invent = parseFloat(cells[17].innerText);
+                let current = parseFloat(cells[18].innerText);
+
+                let score = 0;
+
+                function check(cell, condition) {
+                    if (condition) {
+                        cell.classList.add("positive");
+                        score++;
+                    } else {
+                        cell.classList.add("negative");
+                    }
+                }
+
+                check(cells[4], pe < 30);
+                check(cells[5], cmpbv < 3);
+                check(cells[6], peg < 1);
+                check(cells[7], mcapsales < 3);
+                check(cells[8], sales > 10);
+                check(cells[9], profit > 15);
+                check(cells[10], roe > 15);
+                check(cells[11], roce > 15);
+                check(cells[12], asset > 1);
+                check(cells[13], opm > 15);
+                check(cells[14], npm > 10);
+                check(cells[15], debt <= 0.2);
+                check(cells[16], interest >= 20);
+                check(cells[17], invent > 4);
+                check(cells[18], current >= 1.5 && current <= 2);
+
+                let percentage = Math.round((score / 15) * 100);
+
+                let analysis = percentage >= 60 ? "GREEN" : "RED";
+                let suggestion = percentage >= 60 ? "BUY" : "AVOID";
+
+                let stars = "⭐";
+
+                if (percentage >= 80) stars = "⭐⭐⭐⭐⭐";
+                else if (percentage >= 60) stars = "⭐⭐⭐⭐";
+                else if (percentage >= 50) stars = "⭐⭐⭐";
+                else if (percentage >= 40) stars = "⭐⭐";
+
+                let scoreCell = rows[i].insertCell(-1);
+                scoreCell.innerText = percentage + "%";
+
+                let analysisCell = rows[i].insertCell(-1);
+                analysisCell.innerText = analysis;
+
+                let suggestionCell = rows[i].insertCell(-1);
+
+                if (suggestion === "BUY") {
+                    suggestionCell.innerHTML = '<span class="buy-badge">BUY</span>';
+                } else {
+                    suggestionCell.innerHTML = '<span class="avoid-badge">AVOID</span>';
+                }
+
+                let ratingCell = rows[i].insertCell(-1);
+                ratingCell.innerText = stars;
+
+            }
+
+        }
+
+        window.onload = applyFundamentalColors;
+
+        function searchStock() {
+
+            let input = document.getElementById("stockSearch");
+            let filter = input.value.toLowerCase();
+
+            let table = document.getElementById("stockTable");
+            let tr = table.getElementsByTagName("tr");
+
+            for (let i = 1; i < tr.length; i++) {
+
+                let td = tr[i].getElementsByTagName("td")[2];
+
+                if (td) {
+
+                    let txt = td.textContent || td.innerText;
+
+                    if (txt.toLowerCase().indexOf(filter) > -1) {
+                        tr[i].style.display = "";
+                    } else {
+                        tr[i].style.display = "none";
+                    }
+
+                }
+
+            }
+
+        }
+
+        function showSuggestions() {
+
+            let input = document.getElementById("stockSearch").value.toLowerCase();
+            let box = document.getElementById("suggestions");
+
+            box.innerHTML = "";
+
+            if (input.length < 1) {
+                return;
+            }
+
+            let filtered = allStocks.filter(s =>
+                s.name.toLowerCase().includes(input)
+            );
+
+            filtered.slice(0, 10).forEach(stock => {
+
+                let div = document.createElement("div");
+                div.classList.add("suggestion-item");
+
+                div.innerText = stock.name;
+
+                div.onclick = function () {
+                    window.location.href = "/stock/" + stock.slug + "/";
+                };
+
+                box.appendChild(div);
+
+            });
+
+        }
+
+    </script>
+
+    {% include 'footer.html' %}
+
+</body>
+
+</html>

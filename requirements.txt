@@ -1,0 +1,23 @@
+# Core framework
+Django>=6.0,<7.0
+
+# Database adapter for django.db.backends.mysql
+mysqlclient>=2.2
+
+# HTTP + scraping
+requests>=2.31
+beautifulsoup4>=4.12
+selenium>=4.20
+webdriver-manager>=4.0
+
+# Market data
+yfinance>=0.2
+
+# Excel export
+openpyxl>=3.1
+
+# Payment gateway
+razorpay>=1.4
+
+# Environment variable loading
+python-dotenv>=1.0

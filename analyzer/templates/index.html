@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Stock Analyzer</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="/static/base.css">
+    <style>
+
+
+        .login-btn{
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+    padding:8px 20px;
+
+    font-size:13px;
+    font-weight:700;
+
+    color:#3047ff;
+    background:#f5f5f5;
+
+    border:1px solid #d4d4d4;
+    border-radius:10px;
+
+    text-decoration:none;
+    box-shadow:0 1px 2px rgba(0,0,0,0.1);
+}
+
+.login-btn i{
+    font-size:14px;
+}
+
+.login-btn:hover{
+    background:#e6e6e6;
+    transform:scale(1.03);
+}
+        .top-right {
+            position: absolute;
+            top: 20px;
+            right: 40px;
+        }
+
+  .top-right a {
+    text-decoration: none;
+    margin-left: 15px;
+    padding: 8px 16px;
+    border-radius: 6px;
+    background: #7b2cff;
+    color: white;
+    font-weight: 500;
+}
+
+.top-right a:hover {
+    background: #5a1fd1;
+}
+   
+        .container {
+            width: 90%;
+            max-width: 900px;
+            margin: auto;
+            padding-top: 120px;
+        }
+
+        .modal{
+    display:none;
+    position:fixed;
+    z-index:1000;
+    left:0;
+    top:0;
+    width:100%;
+    height:100%;
+    background:rgba(0,0,0,0.6);
+}
+
+.modal-content{
+    background: linear-gradient(135deg,#898ac4,#5a1fd1);
+    width:400px;
+    margin:15% auto;
+    padding:20px;
+    border-radius:8px;
+    text-align:center;
+}
+
+.modal button{
+    padding:8px 16px;
+    margin:5px;
+}       
+
+    </style>
+
+    <script>
+        function autoSubmit() {
+            document.getElementById("filterForm").submit();
+        }
+    </script>
+
+</head>
+
+<body>
+
+<div class="top-right">
+    <a href="{% url 'login' %}" class="login-btn">
+    <i class="fa-regular fa-user"></i> LOGIN </a>
+    <a href="#" onclick="openTerms()" class="login-btn">
+    <i class="fa-solid fa-user-plus"></i> REGISTER </a>
+</div>
+
+<div class="container">
+
+    <h1 style="text-align:center;">Stock Analyzer</h1>
+
+    <h3 class="tagline">Fundamental Stock Analysis for Smart Investors in India</h3>
+
+    <div class="card">
+
+        <!-- FILTER FORM (GET) -->
+        <form method="GET" id="filterForm">
+            <select name="sector" onchange="autoSubmit()">
+                <option value="">Select Sector</option>
+                {% for sector in sectors %}
+                    <option value="{{ sector }}"
+                        {% if selected_sector == sector %}selected{% endif %}>
+                        {{ sector }}
+                    </option>
+                {% endfor %}
+            </select>
+        </form>
+
+        <!-- ANALYZE FORM (POST) -->
+        <form method="POST" action="{% url 'analyze_stock' %}">
+            {% csrf_token %}
+
+            <select name="stock_slug" required>
+                <option value="">Select Stock</option>
+                {% for stock in stocks %}
+                    <option value="{{ stock.slug }}">
+                        {{ stock.name }}
+                    </option>
+                {% endfor %}
+            </select>
+
+            <br>
+            <button type="submit" class="btn-violet">
+                Analyze
+            </button>
+
+        </form>
+
+    </div>
+
+</div>
+{% include 'footer.html'%}
+
+<div id="termsModal" class="modal">
+    <div class="modal-content">
+
+        <h3>Terms & Conditions</h3>
+
+        <p>
+        Please read our Privacy Policy before registering.
+        </p>
+
+        <label>
+            <input type="checkbox" id="agreeCheckbox">
+            I Understand <a href="{% url 'privacy' %}" target="_blank">Privacy Policy</a>
+        </label>
+
+        <br><br>
+
+        <button onclick="proceedRegister()">Continue</button>
+        <button onclick="closeTerms()">Cancel</button>
+
+    </div>
+</div>
+<script>
+    function openTerms(){
+    document.getElementById("termsModal").style.display="block";
+}
+
+function closeTerms(){
+    document.getElementById("termsModal").style.display="none";
+}
+
+function proceedRegister(){
+
+    var check=document.getElementById("agreeCheckbox");
+
+    if(!check.checked){
+        alert("You must accept the Privacy Policy to continue.");
+        return;
+    }
+
+    window.location.href="{% url 'register' %}";
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,161 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+body{
+    margin:0;
+    min-height:100vh;
+    font-family: 'Inter', Arial, sans-serif;
+    background: linear-gradient(135deg,#a2aadb,#898ac4);
+    background-attachment: fixed;
+}
+
+.dashboard-container{
+width:100%;
+padding:20px;
+box-sizing:border-box;
+}
+
+.card{
+background:white;
+border-radius:10px;
+padding:20px;
+box-shadow:0px 4px 10px rgba(0,0,0,0.2);
+}
+
+.header{
+display:flex;
+justify-content:space-between;
+align-items:center;
+position:relative;
+}
+
+h2{
+margin:0;
+}
+
+.search-box{
+position:relative;
+}
+
+.search-box input{
+padding:8px 12px;
+border-radius:6px;
+border:1px solid #ccc;
+width:220px;
+}
+
+.download-btn{
+background:#1976d2;
+color:white;
+padding:8px 15px;
+border-radius:5px;
+text-decoration:none;
+margin-left:10px;
+display:inline-block;
+}
+
+.download-btn:hover{
+background:#0d47a1;
+}
+
+.export-btn{
+background:#2e7d32;
+color:white;
+padding:8px 15px;
+border-radius:5px;
+text-decoration:none;
+display:inline-block;
+}
+
+table{
+width:100%;
+border-collapse:collapse;
+table-layout:fixed;
+}
+
+th,td{
+padding:8px;
+text-align:center;
+border:1px solid #ddd;
+font-size:13px;
+word-wrap:break-word;
+}
+
+th{
+background:#5a1fd1;
+color:white;
+}
+
+tr:nth-child(even){
+background:#f2f2f2;
+}
+
+.positive{
+background:#c8f7c5;
+font-weight:bold;
+}
+
+.negative{
+background:#ffb3b3;
+font-weight:bold;
+}
+
+.buy-badge{
+background:#2e7d32;
+color:white;
+padding:3px 8px;
+border-radius:4px;
+font-size:12px;
+}
+
+.avoid-badge{
+background:#c62828;
+color:white;
+padding:3px 8px;
+border-radius:4px;
+font-size:12px;
+}
+
+.logout-btn{
+float:right;
+background:#ff4b5c;
+color:white;
+padding:8px 15px;
+border-radius:5px;
+text-decoration:none;
+}
+
+.action-bar{
+margin-top:20px;
+display:flex;
+align-items:center;
+justify-content:space-between;
+flex-wrap:wrap;
+}
+
+.center-search{
+flex:1;
+display:flex;
+justify-content:center;
+}
+
+#suggestions{
+position:absolute;
+top:40px;
+left:0;
+background:white;
+width:220px;
+border:1px solid #ccc;
+border-radius:6px;
+max-height:250px;
+overflow-y:auto;
+z-index:1000;
+}
+
+.suggestion-item{
+padding:8px;
+cursor:pointer;
+}
+
+.suggestion-item:hover{
+background:#f2f2f2;
+}

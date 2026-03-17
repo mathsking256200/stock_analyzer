@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Reset Password</title>
+    <link rel="stylesheet" href="/static/style.css">
+
+    <style>
+        #password_message{
+            font-size:14px;
+            margin-top:5px;
+            display:block;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+    <h2>Set New Password</h2>
+
+    <form method="POST" onsubmit="return checkMatch()">
+        {% csrf_token %}
+
+        <input type="password"
+               id="password"
+               name="new_password"
+               placeholder="New Password"
+               required>
+
+        <input type="password"
+               id="confirm_password"
+               placeholder="Confirm Password"
+               required>
+
+        <small id="password_message"></small>
+
+        <button type="submit">Change Password</button>
+    </form>
+
+    {% if error %}
+        <p class="error">{{ error }}</p>
+    {% endif %}
+</div>
+
+<script>
+
+const password = document.getElementById("password");
+const confirmPassword = document.getElementById("confirm_password");
+const message = document.getElementById("password_message");
+
+function validatePassword() {
+
+    const pattern = /^(?=.*[0-9]).{6,}$/;
+
+    // PASSWORD VALIDATION
+    if (!password.value.match(pattern)) {
+
+        message.style.color = "red";
+        message.innerHTML = "Password must be at least 6 characters and contain 1 number";
+        password.style.borderColor = "red";
+        return;
+
+    } else {
+
+        password.style.borderColor = "green";
+
+    }
+
+    // CONFIRM PASSWORD VALIDATION
+    if (confirmPassword.value === "") {
+        message.innerHTML = "";
+        confirmPassword.style.borderColor = "";
+        return;
+    }
+
+    if (password.value === confirmPassword.value) {
+
+        message.style.color = "green";
+        message.innerHTML = "✓ Passwords match";
+        confirmPassword.style.borderColor = "green";
+
+    } else {
+
+        message.style.color = "red";
+        message.innerHTML = "✗ Passwords do not match";
+        confirmPassword.style.borderColor = "red";
+
+    }
+}
+
+
+// LIVE VALIDATION ON BOTH FIELDS
+password.addEventListener("keyup", validatePassword);
+confirmPassword.addEventListener("keyup", validatePassword);
+
+
+// FINAL FORM CHECK BEFORE SUBMIT
+function checkMatch(){
+
+    const pattern = /^(?=.*[0-9]).{6,}$/;
+
+    if(!password.value.match(pattern)){
+        alert("Password must be at least 6 characters and contain 1 number");
+        return false;
+    }
+
+    if(password.value !== confirmPassword.value){
+        alert("Passwords do not match!");
+        return false;
+    }
+
+    return true;
+}
+
+</script>
+
+</body>
+</html>

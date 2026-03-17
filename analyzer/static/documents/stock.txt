@@ -1,0 +1,315 @@
+Test API Key - rzp_test_SPPhn96Cobt4x1
+Test Key Secret - J66jp5BKTHfOAsiE2sLIMhtV
+
+
+from analyzer.models import Stock
+from django.utils.text import slugify
+
+stocks = [
+
+     # ---------------- AUTOMOBILE ----------------
+    ("Apollo Tyres Ltd", "APOLLOTYRE", "Automobiles"),
+    ("Hyundai Motor India Ltd", "HYUNDAI", "Automobiles"),
+    ("TVS Motor Company Ltd", "TVSMOTOR", "Automobiles"),
+    ("Ola Electric Mobility Ltd", "OLAELECTRIC", "Automobiles"),
+    ("Tata Motors Ltd", "TATAMOTORS", "Automobiles"),
+    ("Maruti Suzuki India Ltd", "MARUTI", "Automobiles"),
+    ("Eicher Motors Ltd", "EICHERMOT", "Automobiles"),
+    ("Bajaj Auto Ltd", "BAJAJ-AUTO", "Automobiles"),
+    ("Mahindra & Mahindra Ltd", "M&M", "Automobiles"),
+    ("Hero MotoCorp Ltd","HEROMOTOCO","Automobiles"),
+    ("Ashok Leyland Ltd","ASHOKLEY","Automobiles"),
+    ("Escorts Kubota Ltd","ESCORTS","Automobiles"),
+
+     # ---------------- AUTOMOBILE COMPONENTS ----------------
+    ("Bosch Ltd", "BOSCHLTD", "Auto Components"),
+    ("Motherson Sumi Wiring India Ltd", "MSUMI", "Auto Components"),
+    ("Sona BLW Precision Forgings Ltd", "SONACOMS", "Auto Components"),
+    ("Sundaram Clayton Ltd", "SUNCLAY", "Auto Components"),
+
+
+    # ---------------- BANKING ----------------
+    ("Bank of Baroda", "BANKBARODA", "Banking"),
+    ("Punjab National Bank", "PNB", "Banking"),
+    ("Union Bank of India", "UNIONBANK", "Banking"),
+    ("Bank of India", "BANKINDIA", "Banking"),
+    ("State Bank of India", "SBIN", "Banking"),
+    ("HDFC Bank Ltd", "HDFCBANK", "Banking"),
+    ("ICICI Bank Ltd", "ICICIBANK", "Banking"),
+    ("Axis Bank Ltd", "AXISBANK", "Banking"),
+    ("Kotak Mahindra Bank Ltd", "KOTAKBANK", "Banking"),
+     ("IndusInd Bank Ltd","INDUSINDBK","Banking"),
+     ("Yes Bank Ltd","YESBANK","Banking"),
+     ("Federal Bank Ltd","FEDERALBNK","Banking"),
+     ("IDFC First Bank Ltd","IDFCFIRSTB","Banking"),
+     ("RBL Bank Ltd","RBLBANK","Banking"),
+     ("AU Small Finance Bank Ltd","AUBANK","Banking"),
+     ("Bandhan Bank Ltd","BANDHANBNK","Banking"),
+
+    # ---------------- IT ----------------
+    ("Infosys Ltd", "INFY", "IT Services"),
+    ("Tata Consultancy Services Ltd", "TCS", "IT Services"),
+    ("Wipro Ltd", "WIPRO", "IT Services"),
+    ("HCL Technologies Ltd", "HCLTECH", "IT Services"),
+    ("Tech Mahindra Ltd", "TECHM", "IT Services"),
+    ("Oracle Financial Services Software Ltd", "OFSS", "IT Services"),
+    ("LTIMindtree Ltd","LTIM","IT Services"),
+    ("Persistent Systems Ltd","PERSISTENT","IT Services"),
+    ("Coforge Ltd","COFORGE","IT Services"),
+    ("Mphasis Ltd","MPHASIS","IT Services"),
+    ("L&T Technology Services Ltd","LTTS","IT Services"),
+
+    # ---------------- PHARMA & HEALTHCARE ----------------
+    ("Cipla Ltd", "CIPLA", "Pharmaceuticals"),
+    ("Dr Reddys Laboratories Ltd", "DRREDDY", "Pharmaceuticals"),
+    ("Sun Pharmaceutical Industries Ltd", "SUNPHARMA", "Pharmaceuticals"),
+    ("Mankind Pharma Ltd", "MANKIND", "Pharmaceuticals"),
+    ("Emcure Pharmaceuticals Ltd", "EMCURE", "Pharmaceuticals"),
+    ("Max Healthcare Institute Ltd", "MAXHEALTH", "Healthcare"),
+    ("Apollo Hospitals Enterprise Ltd", "APOLLOHOSP", "Healthcare"),
+    ("Lupin Ltd","LUPIN","Pharmaceuticals"),
+    ("Aurobindo Pharma Ltd","AUROPHARMA","Pharmaceuticals"),
+    ("Torrent Pharmaceuticals Ltd","TORNTPHARM","Pharmaceuticals"),
+    ("Alkem Laboratories Ltd","ALKEM","Pharmaceuticals"),
+    ("Biocon Ltd","BIOCON","Pharmaceuticals"),
+
+    # ---------------- FMCG ----------------
+    ("ITC Ltd", "ITC", "FMCG"),
+    ("Hindustan Unilever Ltd", "HINDUNILVR", "FMCG"),
+    ("Nestle India Ltd", "NESTLEIND", "FMCG"),
+    ("Tata Consumer Products Ltd", "TATACONSUM", "FMCG"),
+    ("Godrej Consumer Products Ltd", "GODREJCP", "FMCG"),
+    ("Asian Paints Ltd", "ASIANPAINT", "FMCG"),
+
+    # ---------------- OIL & GAS ----------------
+    ("Reliance Industries Ltd", "RELIANCE", "Oil & Gas"),
+    ("Bharat Petroleum Corporation Ltd", "BPCL", "Oil & Gas"),
+    ("Indian Oil Corporation Ltd", "IOC", "Oil & Gas"),
+    ("Hindustan Petroleum Corporation Ltd", "HPCL", "Oil & Gas"),
+    ("Oil and Natural Gas Corporation Ltd", "ONGC", "Oil & Gas"),
+    ("GAIL (India) Ltd", "GAIL", "Oil & Gas"),
+
+    # ---------------- METALS ----------------
+    ("Tata Steel Ltd", "TATASTEEL", "Steel"),
+    ("JSW Steel Ltd", "JSWSTEEL", "Steel"),
+    ("Jindal Steel & Power Ltd", "JINDALSTEL", "Steel"),
+    ("Hindalco Industries Ltd", "HINDALCO", "Metals"),
+
+    # ---------------- CEMENT ----------------
+    ("UltraTech Cement Ltd", "ULTRACEMCO", "Cement"),
+    ("Shree Cement Ltd", "SHREECEM", "Cement"),
+    ("Grasim Industries Ltd", "GRASIM", "Cement"),
+    ("JK Cement Ltd", "JKCEMENT", "Cement"),
+    ("Ambuja Cements Ltd","AMBUJACEM","Cement"),
+    ("ACC Ltd","ACC","Cement"),
+    ("Dalmia Bharat Ltd","DALBHARAT","Cement"),
+
+    # ---------------- FINANCE ----------------
+    ("Bajaj Finance Ltd", "BAJFINANCE", "Finance"),
+    ("Bajaj Finserv Ltd", "BAJAJFINSV", "Finance"),
+    ("Shriram Finance Ltd", "SHRIRAMFIN", "Finance"),
+    ("Muthoot Finance Ltd", "MUTHOOTFIN", "Finance"),
+    ("Cholamandalam Investment & Finance Company Ltd", "CHOLAFIN", "Finance"),
+    ("SBI Cards and Payment Services Ltd", "SBICARD", "Finance"),
+    ("Jio Financial Services Ltd", "JIOFIN", "Finance"),
+
+    # ---------------- INSURANCE ----------------
+    ("Life Insurance Corporation of India", "LICI", "Insurance"),
+    ("HDFC Life Insurance Company Ltd", "HDFCLIFE", "Insurance"),
+    ("SBI Life Insurance Company Ltd", "SBILIFE", "Insurance"),
+    ("Max Life Insurance Company Ltd", "MAXLIFE", "Insurance"),
+    ("ICICI Prudential Life Insurance Company Ltd", "ICICIPRULI", "Insurance"),
+    ("ICICI Lombard General Insurance Company Ltd", "ICICIGI", "Insurance"),
+   ("General Insurance Corporation of India", "GICRE", "Insurance"),
+   ("Star Health and Allied Insurance Company Ltd", "STARHEALTH", "Insurance"),
+
+    # ---------------- POWER ----------------
+    ("NTPC Ltd", "NTPC", "Power"),
+    ("Power Grid Corporation of India Ltd", "POWERGRID", "Power"),
+    ("Coal India Ltd", "COALINDIA", "Mining"),
+    ("Saral Mining Ltd", "SARALMIN", "Mining"),
+    ("Eastern Mining and Allied Industries Ltd", "EMAMILTD", "Mining"),
+
+    # ---------------- INDUSTRIALS ----------------
+    ("Larsen & Toubro Ltd", "LT", "Capital Goods"),
+    ("Siemens Ltd", "SIEMENS", "Capital Goods"),
+    ("Bharat Electronics Ltd", "BEL", "Capital Goods"),
+
+    # ---------------- TELECOM ----------------
+    ("Bharti Airtel Ltd", "BHARTIARTL", "Telecom"),
+
+    # ---------------- RETAIL ----------------
+    ("Avenue Supermarts Ltd", "DMART", "Retail"),
+    ("Trent Ltd", "TRENT", "Retail"),
+    ("Kalyan Jewellers India Ltd", "KALYANKJIL", "Retail"),
+    ("Lenskart Solutions Ltd", "LENSKART", "Retail"),
+    ("Vishal Mega Mart Ltd", "VMM", "Retail"),
+
+    # ---------------- PORTS & INFRA ----------------
+    ("Adani Ports and Special Economic Zone Ltd", "ADANIPORTS", "Infrastructure"),
+    ("Adani Enterprises Ltd", "ADANIENT", "Infrastructure"),
+
+    # ---------------- CHEMICALS ----------------
+    ("Pidilite Industries Ltd", "PIDILITIND", "Chemicals"),
+    ("SRF Ltd", "SRF", "Chemicals"),
+    ("Aarti Industries Ltd", "AARTIIND", "Chemicals"),
+    ("Deepak Nitrite Ltd", "DEEPAKNTR", "Chemicals"),
+    ("Navin Fluorine International Ltd", "NAVINFLUOR", "Chemicals"),
+
+    # ---------------- SPECIALTY CHEMICALS ----------------
+   ("PI Industries Ltd", "PIIND", "Chemicals"),
+   ("Vinati Organics Ltd", "VINATIORGA", "Chemicals"),
+   ("Alkyl Amines Chemicals Ltd", "ALKYLAMINE", "Chemicals"),
+
+   # ---------------- DEFENCE ----------------
+  ("Hindustan Aeronautics Ltd", "HAL", "Defence"),
+  ("Bharat Dynamics Ltd", "BDL", "Defence"),
+  ("Mazagon Dock Shipbuilders Ltd", "MAZDOCK", "Defence"),
+  ("Cochin Shipyard Ltd", "COCHINSHIP", "Defence"),
+
+   # ---------------- RAILWAY ----------------
+  ("IRCTC Ltd", "IRCTC", "Railways"),
+  ("Rail Vikas Nigam Ltd", "RVNL", "Railways"),
+  ("IRCON International Ltd", "IRCON", "Railways"),
+  ("Titagarh Rail Systems Ltd", "TITAGARH", "Railways"),
+
+  # ---------------- REAL ESTATE ----------------
+  ("DLF Ltd", "DLF", "Real Estate"),
+  ("Macrotech Developers Ltd", "LODHA", "Real Estate"),
+  ("Godrej Properties Ltd", "GODREJPROP", "Real Estate"),
+  ("Oberoi Realty Ltd", "OBEROIRLTY", "Real Estate"),
+  ("Prestige Estates Projects Ltd", "PRESTIGE", "Real Estate"),
+
+   # ---------------- MEDIA ----------------
+   ("Zee Entertainment Enterprises Ltd", "ZEEL", "Media"),
+   ("Sun TV Network Ltd", "SUNTV", "Media"),
+   ("PVR INOX Ltd", "PVRINOX", "Media"),
+
+   # ---------------- TEXTILES ----------------
+   ("Page Industries Ltd", "PAGEIND", "Textiles"),
+   ("KPR Mill Ltd", "KPRMILL", "Textiles"),
+   ("Trident Ltd", "TRIDENT", "Textiles"),
+
+   # ---------------- LOGISTICS ----------------
+   ("Container Corporation of India Ltd", "CONCOR", "Logistics"),
+   ("Blue Dart Express Ltd", "BLUEDART", "Logistics"),
+   ("Delhivery Ltd", "DELHIVERY", "Logistics"),
+
+   # ---------------- E-COMMERCE / DIGITAL ----------------
+   ("FSN E-Commerce Ventures Ltd", "NYKAA", "E-Commerce"),
+   ("Zomato Ltd", "ZOMATO", "Internet"),
+   ("One 97 Communications Ltd", "PAYTM", "Fintech"),
+
+   # ---------------- RENEWABLE ENERGY ----------------
+   ("Adani Green Energy Ltd", "ADANIGREEN", "Renewable Energy"),
+   ("Tata Power Company Ltd", "TATAPOWER", "Power"),
+   ("Suzlon Energy Ltd", "SUZLON", "Renewable Energy"),
+
+   # ---------------- EDUCATION ----------------
+   ("NIIT Ltd", "NIITLTD", "Education"),
+   ("Aptech Ltd", "APTECHT", "Education"),
+
+   # ---------------- AGRICULTURE ----------------
+   ("Coromandel International Ltd", "COROMANDEL", "Fertilizers"),
+   ("Chambal Fertilisers and Chemicals Ltd", "CHAMBLFERT", "Fertilizers"),
+   ("UPL Ltd", "UPL", "Fertilizers"),
+	
+    # ---------------- AUTO COMPONENTS ----------------
+    ("Exide Industries Ltd", "EXIDEIND", "Auto Components"),
+    ("Amara Raja Energy & Mobility Ltd", "ARE&M", "Auto Components"),
+    ("Bharat Forge Ltd", "BHARATFORG", "Auto Components"),
+    ("Endurance Technologies Ltd", "ENDURANCE", "Auto Components"),
+    ("Suprajit Engineering Ltd", "SUPRAJIT", "Auto Components"),
+
+    # ---------------- CAPITAL GOODS ----------------
+    ("ABB India Ltd", "ABB", "Capital Goods"),
+    ("Cummins India Ltd", "CUMMINSIND", "Capital Goods"),
+    ("CG Power and Industrial Solutions Ltd", "CGPOWER", "Capital Goods"),
+    ("Thermax Ltd", "THERMAX", "Capital Goods"),
+    ("Apar Industries Ltd", "APARINDS", "Capital Goods"),
+
+    # ---------------- ELECTRONICS ----------------
+    ("Dixon Technologies India Ltd", "DIXON", "Electronics"),
+    ("Amber Enterprises India Ltd", "AMBER", "Electronics"),
+    ("Kaynes Technology India Ltd", "KAYNES", "Electronics"),
+
+    # ---------------- FMCG ADDITIONAL ----------------
+   ("Britannia Industries Ltd", "BRITANNIA", "FMCG"),
+   ("Dabur India Ltd", "DABUR", "FMCG"),
+   ("Marico Ltd", "MARICO", "FMCG"),
+   ("Colgate Palmolive India Ltd", "COLPAL", "FMCG"),
+   ("United Spirits Ltd", "UNITDSPR", "FMCG"),
+
+   # ---------------- CONSUMER DURABLES ----------------
+   ("Voltas Ltd", "VOLTAS", "Consumer Durables"),
+   ("Whirlpool of India Ltd", "WHIRLPOOL", "Consumer Durables"),
+   ("Havells India Ltd", "HAVELLS", "Consumer Durables"),
+   ("Blue Star Ltd", "BLUESTARCO", "Consumer Durables"),
+
+    # ---------------- INFRASTRUCTURE ----------------
+   ("GMR Airports Infrastructure Ltd", "GMRINFRA", "Infrastructure"),
+   ("IRB Infrastructure Developers Ltd", "IRB", "Infrastructure"),
+   ("NCC Ltd", "NCC", "Infrastructure"),
+   ("KNR Constructions Ltd", "KNRCON", "Infrastructure"),
+   ("PNC Infratech Ltd","PNCINFRA","Infrastructure"),
+
+   # ---------------- AIRLINES ----------------
+   ("InterGlobe Aviation Ltd", "INDIGO", "Aviation"),
+   ("SpiceJet Ltd", "SPICEJET", "Aviation"),
+
+   # ---------------- HOSPITALITY ----------------
+   ("Indian Hotels Company Ltd", "INDHOTEL", "Hospitality"),
+   ("EIH Ltd", "EIHOTEL", "Hospitality"),
+   ("Lemon Tree Hotels Ltd", "LEMONTREE", "Hospitality"),
+
+    # ---------------- PACKAGING ----------------
+    ("Uflex Ltd", "UFLEX", "Packaging"),
+    ("Huhtamaki India Ltd", "HUHTAMAKI", "Packaging"),
+
+    # ---------------- PLASTIC ----------------
+    ("Astral Ltd", "ASTRAL", "Plastics"),
+   ("Supreme Industries Ltd", "SUPREMEIND", "Plastics"),
+   ("Finolex Industries Ltd", "FINPIPE", "Plastics"),
+
+   # ---------------- TELECOM ADDITIONAL ----------------
+   ("Vodafone Idea Ltd", "IDEA", "Telecom"),
+   ("Tejas Networks Ltd", "TEJASNET", "Telecom"),
+
+   # ---------------- POWER EQUIPMENT ----------------
+   ("BHEL Ltd", "BHEL", "Power Equipment"),
+   ("KEC International Ltd", "KEC", "Power Equipment"),
+   ("Kalpataru Projects International Ltd", "KPIL", "Power Equipment"),
+
+   # ---------------- ALUMINIUM ----------------
+   ("National Aluminium Company Ltd", "NATIONALUM", "Metals"),
+   ("Vedanta Ltd", "VEDL", "Metals"),
+   ("Steel Authority of India Ltd","SAIL","Metals"),
+
+    # ---------------- GOLD & JEWELLERY ----------------
+    ("Titan Company Ltd", "TITAN", "Jewellery"),
+   ("PC Jeweller Ltd", "PCJEWELLER", "Jewellery"),
+   ("Thangamayil Jewellery Ltd", "THANGAMAYL", "Jewellery"),
+ 
+   # ---------------- SHIPPING ----------------
+   ("Shipping Corporation of India Ltd", "SCI", "Shipping"),
+   ("Great Eastern Shipping Company Ltd", "GESHIP", "Shipping"),
+
+   ("IMEC Services","IMECSERV","Services"),
+   ("Waaree Energies","WAAREE","Energy"),
+   ("Engineers India","ENGINERSIN","Infrastructure"),
+   ("Tips Music","TIPS","Media"),
+   ("Heritage Foods","HERITGFOOD","FMCG"),
+	 	
+]
+
+for name, symbol, sector in stocks:
+    Stock.objects.get_or_create(
+        symbol=symbol.strip().upper(),
+        defaults={
+            "name": name.strip(),
+            "sector": sector.strip(),
+            "slug": slugify(name)
+        }
+    )
+
+print("All stocks inserted successfully without duplicates ✅")
