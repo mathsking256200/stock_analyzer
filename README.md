@@ -201,11 +201,13 @@ python manage.py migrate
 
 ### 7. Create stock records
 
-Add stock rows in the database through Python shell. File is stored in analyzer/static/documents/stock.txt.
+Add stock rows in the database through python shell. File is stored in analyzer/static/documents/stock.txt.
 
 ```bash
 python manage.py shell
 ```
+Kindly paste whole code in shell, so all 205 stocks will be added in database.
+
 To exit the shell:
 
 ```bash
