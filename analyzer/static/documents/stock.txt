@@ -1,7 +1,3 @@
-Test API Key - rzp_test_SPPhn96Cobt4x1
-Test Key Secret - J66jp5BKTHfOAsiE2sLIMhtV
-
-
 from analyzer.models import Stock
 from django.utils.text import slugify
 
