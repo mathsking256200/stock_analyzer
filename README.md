@@ -201,7 +201,17 @@ python manage.py migrate
 
 ### 7. Create stock records
 
-Add stock rows in the database through Django admin, shell, or SQL before using the home page.
+Add stock rows in the database through Python shell. File is stored in analyzer/static/documents/stock.txt.
+
+```bash
+python manage.py shell
+```
+To exit the shell:
+
+```bash
+exit()
+```
+
 
 ### 8. Run the server
 
