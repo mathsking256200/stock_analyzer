@@ -5,9 +5,25 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <link rel="stylesheet" href="/static/base.css">
     <style>
+        
+ .title-box {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 15px;
+}
 
+.title-box .logo {
+    width: 45px;
+    height: 45px;
+}
 
-        .login-btn{
+.title-box h1 {
+    margin: 0;
+    font-size: 36px;
+    font-weight: 700;
+}
+    .login-btn{
     display:inline-flex;
     align-items:center;
     gap:8px;
@@ -107,7 +123,10 @@
 
 <div class="container">
 
-    <h1 style="text-align:center;">Stock Analyzer</h1>
+    <div class="title-box">
+    <img src="/static/logo.png" class="logo">
+    <h1>Stock Analyzer</h1>
+</div>
 
     <h3 class="tagline">Fundamental Stock Analysis for Smart Investors in India</h3>
 
