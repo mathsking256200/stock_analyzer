@@ -46,62 +46,51 @@
 
             {% if watchlist_rows %}
 
-            <table id="stockTable">
+<div class="table-wrapper">
+    <table id="stockTable">
 
-                <thead>
+        <thead>
+            <tr>
+                <th>S.No.</th>
+                <th></th>
+                <th>Name</th>
+                <th>CMP</th>
+                <th>P/E</th>
+                <th>CMP/BV</th>
+                <th>PEG</th>
+                <th>M.cap/Sales</th>
+                <th>Sales Growth</th>
+                <th>Profit Growth</th>
+                <th>ROE</th>
+                <th>ROCE</th>
+                <th>Asset Turnover</th>
+                <th>OPM</th>
+                <th>NPM</th>
+                <th>Debt/Equ</th>
+                <th>Int Coverage</th>
+                <th>Inventory Turnover</th>
+                <th>Current Ratio</th>
+                <th>Score</th>
+                <th>Analysis</th>
+                <th>Suggestion</th>
+                <th>Rating</th>
+            </tr>
+        </thead>
 
-                    <tr>
+        <tbody>
+            {% for row in watchlist_rows %}
+            <tr>
+                {% for cell in row %}
+                <td>{{ cell }}</td>
+                {% endfor %}
+            </tr>
+            {% endfor %}
+        </tbody>
 
-                        <th>S.No.</th>
-                        <th></th>
-                        <th>Name</th>
-                        <th>CMP</th>
-                        <th>P/E</th>
-                        <th>CMP/BV</th>
-                        <th>PEG</th>
-                        <th>M.cap/Sales</th>
-                        <th>Sales Growth</th>
-                        <th>Profit Growth</th>
-                        <th>ROE</th>
-                        <th>ROCE</th>
-                        <th>Asset Turnover</th>
-                        <th>OPM</th>
-                        <th>NPM</th>
-                        <th>Debt/Equ</th>
-                        <th>Int Coverage</th>
-                        <th>Inventory Turnover</th>
-                        <th>Current Ratio</th>
+    </table>
+</div>
 
-                        <th>Score</th>
-                        <th>Analysis</th>
-                        <th>Suggestion</th>
-                        <th>Rating</th>
-
-                    </tr>
-
-                </thead>
-
-                <tbody>
-
-                    {% for row in watchlist_rows %}
-
-                    <tr>
-
-                        {% for cell in row %}
-
-                        <td>{{ cell }}</td>
-
-                        {% endfor %}
-
-                    </tr>
-
-                    {% endfor %}
-
-                </tbody>
-
-            </table>
-
-            {% endif %}
+{% endif %}
 
         </div>
     </div>
