@@ -15,16 +15,28 @@
             <a href="{% url 'logout' %}" class="logout-btn">Logout</a>
 
             <div class="header">
-
                 <h2>Stock Watchlist Dashboard</h2>
-
             </div>
 
-            <div class="action-bar">
+            {% if messages %}
+                <div class="message-stack">
+                    {% for message in messages %}
+                        <div class="alert {% if message.tags %}alert-{{ message.tags }}{% endif %}">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
 
+            <div class="action-bar">
                 <a href="{% url 'export_excel' %}" class="export-btn">
                     Export to Excel
                 </a>
+
+                <form method="post" action="{% url 'send_watchlist_email' %}" class="email-form">
+                    {% csrf_token %}
+                    <button type="submit" class="email-btn">Get E-mail Updates</button>
+                </form>
 
                 <div class="center-search">
                     <div class="search-box">
@@ -46,67 +58,50 @@
 
             {% if watchlist_rows %}
 
-<div class="table-wrapper">
-    <table id="stockTable">
+            <div class="table-wrapper">
+                <table id="stockTable">
+                    <thead>
+                        <tr>
+                            {% for header in display_headers %}
+                                <th>{{ header }}</th>
+                            {% endfor %}
+                        </tr>
+                    </thead>
 
-        <thead>
-            <tr>
-                <th>S.No.</th>
-                <th></th>
-                <th>Name</th>
-                <th>CMP</th>
-                <th>P/E</th>
-                <th>CMP/BV</th>
-                <th>PEG</th>
-                <th>M.cap/Sales</th>
-                <th>Sales Growth</th>
-                <th>Profit Growth</th>
-                <th>ROE</th>
-                <th>ROCE</th>
-                <th>Asset Turnover</th>
-                <th>OPM</th>
-                <th>NPM</th>
-                <th>Debt/Equ</th>
-                <th>Int Coverage</th>
-                <th>Inventory Turnover</th>
-                <th>Current Ratio</th>
-                <th>Score</th>
-                <th>Analysis</th>
-                <th>Suggestion</th>
-                <th>Rating</th>
-            </tr>
-        </thead>
+                    <tbody>
+                        {% for row in watchlist_rows %}
+                        <tr>
+                            {% for cell in row %}
+                            <td>{{ cell }}</td>
+                            {% endfor %}
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
 
-        <tbody>
-            {% for row in watchlist_rows %}
-            <tr>
-                {% for cell in row %}
-                <td>{{ cell }}</td>
-                {% endfor %}
-            </tr>
-            {% endfor %}
-        </tbody>
-
-    </table>
-</div>
-
-{% endif %}
+            {% else %}
+                <p>No watchlist data is available right now.</p>
+            {% endif %}
 
         </div>
     </div>
 
     <script>
 
-        let allStocks = {{ stocks| safe }};
+        let allStocks = {{ stocks|safe }};
 
         function applyFundamentalColors() {
 
             let table = document.getElementById("stockTable");
+            if (!table) return;
+
             let rows = table.getElementsByTagName("tr");
 
             for (let i = 1; i < rows.length; i++) {
 
                 let cells = rows[i].getElementsByTagName("td");
+                if (cells.length < 19) continue;
 
                 let pe = parseFloat(cells[4].innerText);
                 let cmpbv = parseFloat(cells[5].innerText);
@@ -152,12 +147,10 @@
                 check(cells[18], current >= 1.5 && current <= 2);
 
                 let percentage = Math.round((score / 15) * 100);
-
                 let analysis = percentage >= 60 ? "GREEN" : "RED";
                 let suggestion = percentage >= 60 ? "BUY" : "AVOID";
 
                 let stars = "⭐";
-
                 if (percentage >= 80) stars = "⭐⭐⭐⭐⭐";
                 else if (percentage >= 60) stars = "⭐⭐⭐⭐";
                 else if (percentage >= 50) stars = "⭐⭐⭐";
@@ -170,7 +163,6 @@
                 analysisCell.innerText = analysis;
 
                 let suggestionCell = rows[i].insertCell(-1);
-
                 if (suggestion === "BUY") {
                     suggestionCell.innerHTML = '<span class="buy-badge">BUY</span>';
                 } else {
@@ -179,7 +171,6 @@
 
                 let ratingCell = rows[i].insertCell(-1);
                 ratingCell.innerText = stars;
-
             }
 
         }
@@ -192,6 +183,7 @@
             let filter = input.value.toLowerCase();
 
             let table = document.getElementById("stockTable");
+            if (!table) return;
             let tr = table.getElementsByTagName("tr");
 
             for (let i = 1; i < tr.length; i++) {
@@ -199,7 +191,6 @@
                 let td = tr[i].getElementsByTagName("td")[2];
 
                 if (td) {
-
                     let txt = td.textContent || td.innerText;
 
                     if (txt.toLowerCase().indexOf(filter) > -1) {
@@ -207,7 +198,6 @@
                     } else {
                         tr[i].style.display = "none";
                     }
-
                 }
 
             }
@@ -233,7 +223,6 @@
 
                 let div = document.createElement("div");
                 div.classList.add("suggestion-item");
-
                 div.innerText = stock.name;
 
                 div.onclick = function () {
