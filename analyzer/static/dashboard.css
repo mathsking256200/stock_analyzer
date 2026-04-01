@@ -193,3 +193,45 @@ cursor:pointer;
 .suggestion-item:hover{
 background:#f2f2f2;
 }
+.email-form{
+margin:0 10px;
+}
+
+.email-btn{
+border:none;
+background:#6a1b9a;
+color:white;
+padding:8px 15px;
+border-radius:5px;
+cursor:pointer;
+font-size:14px;
+}
+
+.email-btn:hover{
+background:#4a148c;
+}
+
+.message-stack{
+margin-top:18px;
+display:flex;
+flex-direction:column;
+gap:10px;
+}
+
+.alert{
+padding:10px 14px;
+border-radius:8px;
+font-size:14px;
+}
+
+.alert-success{
+background:#e8f5e9;
+color:#1b5e20;
+border:1px solid #a5d6a7;
+}
+
+.alert-error{
+background:#ffebee;
+color:#b71c1c;
+border:1px solid #ef9a9a;
+}
