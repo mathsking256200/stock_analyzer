@@ -1,6 +1,6 @@
 # Stock Analyzer
 
-A Django-based stock analysis web application that lets users browse stocks by sector, open a detailed stock page, view key financial tables, fetch candlestick chart data, inspect peer comparison data, access a Screener watchlist dashboard, and export watchlist analysis to Excel.
+A Django-based stock analysis web application that lets users browse stocks by sector, open a detailed stock page, view key financial tables, fetch candlestick chart data, inspect peer comparison data, access a Screener watchlist dashboard, export watchlist analysis to Excel, and email the full scraped watchlist table as a PDF from the dashboard.
 
 ## Main Features
 
@@ -20,6 +20,9 @@ A Django-based stock analysis web application that lets users browse stocks by s
 - Razorpay payment step during registration
 - Watchlist dashboard scraping from Screener
 - Excel export of watchlist data with conditional formatting
+- **Get E-mail Updates** button on `welcome.html`
+- PDF generation of the complete scraped watchlist table using ReportLab
+- Email delivery of the PDF report to the logged-in user's registered email
 
 ## Project Structure
 
@@ -50,6 +53,7 @@ stock_analyzer/
 │   ├── urls.py
 │   ├── utils.py
 │   └── views.py
+├── requirements.txt
 └── stock_analyzer/
     ├── settings.py
     ├── urls.py
@@ -68,6 +72,7 @@ stock_analyzer/
 - webdriver-manager
 - yfinance
 - OpenPyXL
+- ReportLab
 - Razorpay
 
 ## Database Models
@@ -119,6 +124,7 @@ Fields:
 - `/forgot-password/` - Forgot password flow
 - `/reset/<token>/` - Email token reset page
 - `/welcome/` - User dashboard / watchlist page
+- `/send-watchlist-email/` - Generate and email watchlist PDF report
 - `/logout/` - Logout
 - `/export-excel/` - Download analyzed watchlist in Excel
 - `/about/` - About page
@@ -142,10 +148,17 @@ When a user opens a stock page, the application:
 The registration form stores user data in session first. A Razorpay order is then created, and after payment success the user and payment records are saved.
 
 ### 4. Watchlist Dashboard
-After login, the system uses Selenium to open a Screener watchlist, scrape the table data, and display it on the dashboard.
+After login, the system uses Selenium to open a Screener watchlist, scrape the table data, and display it on the dashboard. The latest scraped rows are stored in the current user session so they can be reused safely for export and email.
 
 ### 5. Excel Export
 The latest watchlist rows are exported to Excel using OpenPyXL. Several numeric columns are highlighted in green or red according to predefined screening rules.
+
+### 6. Get E-mail Updates
+When the user clicks **Get E-mail Updates** on `welcome.html`, the application:
+- reads the latest watchlist rows from the current session,
+- generates a PDF of the full scraped table using ReportLab,
+- sends that PDF to the logged-in user's registered email address,
+- shows a success or error message on the dashboard.
 
 ## Installation
 
@@ -176,6 +189,8 @@ source venv/bin/activate
 pip install -r requirements.txt
 ```
 
+This now installs **ReportLab** as well, which is required for PDF generation.
+
 ### 4. Create MySQL database
 
 Create a database named:
@@ -201,19 +216,19 @@ python manage.py migrate
 
 ### 7. Create stock records
 
-Add stock rows in the database through python shell. File is stored in analyzer/static/documents/stock.txt.
+Add stock rows in the database through python shell. File is stored in `analyzer/static/documents/stock.txt`.
 
 ```bash
 python manage.py shell
 ```
-Kindly paste whole code in shell, so all 205 stocks will be added in database.
+
+Paste the stock-seeding code in the shell so all stock records are added to the database.
 
 To exit the shell:
 
 ```bash
 exit()
 ```
-
 
 ### 8. Run the server
 
@@ -235,6 +250,14 @@ You need:
 - Google Chrome or Chromium installed
 - a compatible Chrome driver
 - or let `webdriver-manager` manage the driver automatically
+
+## Email PDF Feature Notes
+
+- The dashboard email feature is triggered from `welcome.html`.
+- The backend route is `/send-watchlist-email/`.
+- PDF generation uses `reportlab`.
+- Email delivery uses the SMTP settings already configured in Django settings.
+- The feature requires the dashboard data to exist in the current user session. In practice, the user should open the dashboard first so the latest watchlist is scraped and stored.
 
 ## Security Notes Before Uploading to GitHub
 
@@ -264,7 +287,7 @@ Sensitive values found in the code include:
 - Payment callback currently does not verify Razorpay signature
 - Heavy dependence on third-party website structure for scraping
 - Watchlist scraping depends on valid external login credentials
-- Dashboard export only works after watchlist data has been loaded in the current process
+- Excel export and PDF email delivery only work after watchlist data has been loaded in the current user session
 
 ## Suggested Improvements
 
@@ -275,6 +298,7 @@ Sensitive values found in the code include:
 - Add search and pagination
 - Add tests for scraping and view logic
 - Add deployment configuration for production
+- Add scheduler-based email reports and user-specific watchlists
 
 ## License
 
