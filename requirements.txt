@@ -16,6 +16,9 @@ yfinance>=0.2
 # Excel export
 openpyxl>=3.1
 
+# PDF generation for watchlist email attachment
+reportlab>=4.0
+
 # Payment gateway
 razorpay>=1.4
 
