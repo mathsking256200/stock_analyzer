@@ -17,6 +17,14 @@ HEADERS = {
     "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)"
 }
 
+WATCHLIST_BASE_HEADERS = [
+    "S.No.", "", "Name", "CMP", "P/E", "CMP/BV", "PEG", "M.cap/Sales",
+    "Sales Growth", "Profit Growth", "ROE", "ROCE", "Asset Turnover", "OPM",
+    "NPM", "Debt/Equ", "Int Coverage", "Inventory Turnover", "Current Ratio"
+]
+
+WATCHLIST_FULL_HEADERS = WATCHLIST_BASE_HEADERS + ["Score", "Analysis", "Suggestion", "Rating"]
+
 
 # ---------------------------
 # Normalize Symbol
@@ -88,7 +96,7 @@ def scrape_table(symbol, table_type):
             "cf": "cash-flow",
             "ratios": "ratios",
             "shareholding": "shareholding"
-}
+        }
 
         section_id = section_map.get(table_type)
         if not section_id:
@@ -208,12 +216,13 @@ def get_candlestick_data(symbol, period="1y"):
     except Exception as e:
         print("Chart Error:", e)
         return []
-    
+
+
 # ---------------------------
 # Watchlist Scraper
 # ---------------------------
 def scrape_watchlist_with_selenium(email, password, watchlist_url):
-    
+
     if not email or not password:
         raise ValueError("Email or Password is missing!")
 
@@ -300,13 +309,99 @@ def scrape_watchlist_with_selenium(email, password, watchlist_url):
     finally:
         driver.quit()
 
+
 # ---------------------------
-# Floating value for excel
+# Floating value helpers
 # ---------------------------
 def safe_float(value):
     try:
         if value == "" or value is None:
-            return 0
-        return float(value)
-    except:
-        return 0
+            return 0.0
+
+        cleaned = str(value).strip()
+        cleaned = cleaned.replace(",", "")
+        cleaned = cleaned.replace("%", "")
+        cleaned = cleaned.replace("₹", "")
+        cleaned = cleaned.replace("x", "")
+
+        if cleaned in {"", "-", "--", "NA", "N/A"}:
+            return 0.0
+
+        return float(cleaned)
+    except Exception:
+        return 0.0
+
+
+def evaluate_watchlist_row(row):
+    padded_row = list(row[:19]) + [""] * max(0, 19 - len(row))
+
+    pe = safe_float(padded_row[4])
+    cmpbv = safe_float(padded_row[5])
+    peg = safe_float(padded_row[6])
+    mcapsales = safe_float(padded_row[7])
+    sales = safe_float(padded_row[8])
+    profit = safe_float(padded_row[9])
+    roe = safe_float(padded_row[10])
+    roce = safe_float(padded_row[11])
+    asset = safe_float(padded_row[12])
+    opm = safe_float(padded_row[13])
+    npm = safe_float(padded_row[14])
+    debt = safe_float(padded_row[15])
+    interest = safe_float(padded_row[16])
+    invent = safe_float(padded_row[17])
+    current = safe_float(padded_row[18])
+
+    checks = [
+        pe < 30,
+        cmpbv < 3,
+        peg < 1,
+        mcapsales < 3,
+        sales > 10,
+        profit > 15,
+        roe > 15,
+        roce > 15,
+        asset > 1,
+        opm > 15,
+        npm > 10,
+        debt <= 0.2,
+        interest >= 20,
+        invent > 4,
+        1.5 <= current <= 2,
+    ]
+
+    score = round((sum(checks) / 15) * 100)
+    analysis = "GREEN" if score >= 60 else "RED"
+    suggestion = "BUY" if score >= 60 else "AVOID"
+
+    rating = "⭐"
+    if score >= 80:
+        rating = "⭐⭐⭐⭐⭐"
+    elif score >= 60:
+        rating = "⭐⭐⭐⭐"
+    elif score >= 50:
+        rating = "⭐⭐⭐"
+    elif score >= 40:
+        rating = "⭐⭐"
+
+    return {
+        "score": f"{score}%",
+        "analysis": analysis,
+        "suggestion": suggestion,
+        "rating": rating,
+    }
+
+
+def build_watchlist_report_rows(rows):
+    enriched_rows = []
+
+    for row in rows or []:
+        base_row = list(row[:19]) + [""] * max(0, 19 - len(row))
+        evaluation = evaluate_watchlist_row(base_row)
+        enriched_rows.append(base_row + [
+            evaluation["score"],
+            evaluation["analysis"],
+            evaluation["suggestion"],
+            evaluation["rating"],
+        ])
+
+    return enriched_rows
