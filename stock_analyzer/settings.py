@@ -132,7 +132,7 @@ EMAIL_HOST = os.getenv('EMAIL_HOST', 'smtp.gmail.com')
 EMAIL_PORT = int(os.getenv('EMAIL_PORT', '587'))
 EMAIL_USE_TLS = env_bool('EMAIL_USE_TLS', True)
 EMAIL_USE_SSL = env_bool('EMAIL_USE_SSL', False)
-EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER', 'mscit230841305023@gmail.com')
+EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER', 'stockanalyzer256200@gmail.com')
 EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD', 'lnbl kfmy jlei qjlu')
 DEFAULT_FROM_EMAIL = os.getenv('DEFAULT_FROM_EMAIL', EMAIL_HOST_USER)
 
@@ -143,8 +143,8 @@ RAZORPAY_KEY_SECRET = os.getenv('RAZORPAY_KEY_SECRET', 'J66jp5BKTHfOAsiE2sLIMhtV
 
 
 # Screener login / watchlist
-SCREENER_EMAIL = os.getenv('SCREENER_EMAIL', 'rajmistry2424@gmail.com')
-SCREENER_PASSWORD = os.getenv('SCREENER_PASSWORD', 'Rajcam24@')
+SCREENER_EMAIL = os.getenv('SCREENER_EMAIL', 'xyzpqr456@gmail.com')
+SCREENER_PASSWORD = os.getenv('SCREENER_PASSWORD', 'Stock@123')
 SCREENER_WATCHLIST_URL = os.getenv('SCREENER_WATCHLIST_URL', 'https://www.screener.in/watchlist/10077488/')
 
 
