@@ -335,8 +335,8 @@ def email_reset(request, token):
 
 def _get_watchlist_credentials():
     return (
-        getattr(settings, "SCREENER_EMAIL", "rajmistry2424@gmail.com"),
-        getattr(settings, "SCREENER_PASSWORD", "Rajcam24@"),
+        getattr(settings, "SCREENER_EMAIL", "xyzpqr456@gmail.com"),
+        getattr(settings, "SCREENER_PASSWORD", "Stock@123"),
         getattr(settings, "SCREENER_WATCHLIST_URL", "https://www.screener.in/watchlist/10077488/"),
     )
 
